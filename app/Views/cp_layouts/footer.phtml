@@ -1,0 +1,92 @@
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+<script>
+
+
+
+  // Toggle the side navigation
+  $("#sidebarToggle, #sidebarToggleTop").on('click', function(e) {
+    $("body").toggleClass("sidebar-toggled");
+    $(".sidebar").toggleClass("toggled");
+    if ($(".sidebar").hasClass("toggled")) {
+      $('.sidebar.collapse').collapse('hide');
+    };
+  });
+
+
+  $(document).ready(function(){
+         load_notification();
+
+
+         $(".active").addClass('show');
+  });
+
+	function load_notification(){
+    $.ajax({
+ 			url:"/notification",
+ 			method:"POST",
+       data:{method:"user"},
+ 			success:function(data)
+ 			{
+         var notiInfo=JSON.parse(data);
+         var html='';
+         i=1;
+         if(notiInfo.count>0)
+            $('.noti-count').text(notiInfo.count);
+         $.each(notiInfo.noti, function( index, row ) {
+           if(i<4){
+            if(row.status==1)
+                html+=' <li class="notification-box item ">';
+             else
+                html+=' <li class="notification-box item not_read">';
+               if(row.type=='new compain')
+               html+='<a href="/managecompaign/ShowPindingCompaigns" style="text-decoration: none; color:#969696">';
+               else
+               html+='<a href="/manageusers/showActiveUsers/" style="text-decoration: none; color:#969696">';
+                
+                html+='<strong class="noti-date">'+row.created_at+'</strong><br>'+
+                             '<span style="font-size: 13px;" >'+
+                             row.text+
+                             '</span'+ 
+                      ' </a></li>';
+           }
+          
+           i++;
+         });
+         if(i==1){
+          html+=' <li class="notification-box">'+
+                         '<div class="row p-5">'+
+                         'There is not any notification'
+                        ' </div>'+
+                      ' </li>';
+         }
+         else{
+          html+='<li class="footer text-center">'+
+                                   '<a href="/notification/viewAminNotification" class="text-blue">View All</a>'+
+                               '</li>';
+         }
+         $('#noti-body').html(html);
+       }
+
+
+ 		       });
+ }
+
+errMsg(<?php echo'"'.Message::check('main').'"'; ?>);
+</script>
+   
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

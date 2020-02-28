@@ -1,0 +1,376 @@
+<?php
+
+  include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'header.phtml';
+  $compaign=$this->view_data['compaign'][0]; ?>
+<body style="background-color: #f9f9f9;">
+<!-- start pages photo -->
+<section class="cover-background top-space section-img" style="background-image:url('/images/home/wbg.jpg')" >
+    <div class="opacity-medium bg-purple"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 display-table page-title">
+                <div class="vertical-align-middle text-center">
+                    <!-- start sub title -->
+                    <span class="text-white"><?php echo $lang['item70']; ?></span>
+                    <!-- end sub title -->
+                    <!-- start page title -->
+                    <h1 class="text-white"><?php echo $lang['item71']; ?></h1>
+                    <!-- end page title -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end pages photo - -->
+
+
+<!-- alert -->
+  <?php if ($compaign['status']!=2) { ?>
+<div class="alert alert-warning alert-dismissible">
+
+<strong>NOTE ! </strong><?php if($compaign['status']==1) echo"This Compaign is not approved yet so and you can't donate."; 
+else echo"This Compaign is finished so and you can't donate." ?> 
+<button type="button" class="close" data-dismiss="alert">&times;</button>
+</div>
+<?php } ?>
+<!-- end of alert -->
+
+<section>
+      <div class="container-flauid m-6 ">
+      <div class="row">
+      <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 pt-3 pr-5 bg-white padding-phone-details">
+      <h1 class='titleD'><?php echo $compaign['title']; ?></h1>
+      <a href="/profile/showProfile/<?php echo $compaign['owner_id']?>">
+        <span class="dateD">
+        <i class="fas fa-pen-fancy text-orange"></i> By <?php  echo Helper::userName($compaign['owner_id']) ?></a> -  <span class="dateD text-blue">
+          <?php echo $compaign['created_at']; ?>
+          </span>
+
+          <img src='/uploads/<?php echo $compaign["galary"]; ?>'  class="img-fluid mt-4 imgD" alt="">
+          <p  class="mt-4 discD" >
+        <?php echo $compaign['descrption']; ?>
+        </p>
+        <hr>
+
+        <div class="mt-4">
+                    <span class="mr-3 tag-title">
+                    <?php echo $lang['item76'];
+                    ?>
+                    </span>
+                    <?php
+                    foreach( Helper::tags($compaign['tags']) as $tags){
+                      ?>
+                    <span class="span-tags ml-3">
+                      <a href="/tags/index/<?php echo $compaign['tags'] ?>">
+                      <?php  echo $tags ?>
+                      </a>
+                    </span>
+                    <?php  }?>
+                  
+
+
+          </div>
+          <br>
+          <hr>
+
+          <h2 class="mt-4 comm-title"><?php echo $lang['item73a']; ?></h2> <br>
+        <div class="comments  mt-0 mr-2 ml-2" id="comments-show"></div>
+
+        <?php if(Session::logged()){?>
+            <div>
+              <h2   class='comm-sub'><?php echo $lang['item73b']; ?></h2> <br>
+            <form action="#" id="comm_form" >
+              <input type="hidden" name="type" value="2">
+                          <div class="wrap-input100 comm-length" >
+                            <textarea class="input100" name="Comment" id="Comment" oninput="if($('#Comment').val()!='')$('#submitComment').attr('disabled' , false ); else $('#submitComment').attr('disabled' , 'disabled' );"></textarea>
+                            <span class="focus-input100" data-placeholder="<?php echo $lang['item73']; ?>"></span>
+                          </div>
+
+            </form>
+                              <div class="form-group">
+                              <button class="btn btn-orange text-uppercase btn-h-orange"  disabled='disabled'  onclick="add_comment()" type="submit" id="submitComment"><span class="glyphicon glyphicon-send"></span> <?php echo $lang['item74']; ?></button>
+
+                              </div>
+            </div>
+        <?php }?>
+
+        </div>
+      <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 side-bar padding-phone-details">
+
+        <div class="list-group side-title" >
+        <h4 class=" card-title group-title "> <?php echo $lang['item71a']; ?></h4>
+        <div>
+
+            <div class='countD donate-count' title="Donars"><i class='fas fa-donate text-orange'></i>        <i class="count-num"><?php echo Helper::countDonars($compaign['id']); ?></i> </div>
+            <div class='countD follow-count' title="Views"><i class='fas fa-eye text-orange'></i>        <i class="count-num"><?php echo Helper::countViewCompaign($compaign['id']); ?></i> </div>
+          
+            <div class='countD comm-count' title="Comments" ><i class='fas  fa-comment-dots text-orange'></i>        <i class="count-num"><?php echo Helper::countComments($compaign['id']); ?></i> </div>
+
+
+      </div>
+      <br>
+            <div class="container">
+              <div class="progress progress-details">
+              <div class="progress-bar progress-bar-style" role="progressbar" style="<?php echo 'width:'.Helper::getProgress($compaign['id']).'%'; ?>" aria-valuenow="<?php echo 'width:'.Helper::getProgress($compaign['id']).'%'; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+
+              <h3 class="text-center text-blue"> <span class="goal-num font-weight-bold"><?php echo Helper::getDonars($compaign['id']).'$ '  ?> <?php echo $lang['item75']; ?> <span class="cost"><?php echo $compaign['cost'].'$'; ?></span></h3>
+
+
+            </div>
+            <?php if(Session::logged() || Session::get('userID'!=$compaign['owner_id'])){?>
+                                <center>
+                                <?php if ($compaign['status']==2) { ?>
+                                <a href="/donate/index/<?php echo $compaign['id'] ?>"><input type="submit" id="donate" class="btndonate float-none donate-color" value="<?php echo $lang['item77b'];?>"/></a>
+                          <?php }
+                               if($compaign['owner_id']!=Session::get('userID')){
+
+                                  if(!in_array(Session::get('userID'),$this->view_data['followers']) ) {
+                                    // echo $compaign['owner_id'].'  '.Session::get('userID')
+                                    ?>
+                                  <input type="button" id="follow" onclick="follow('follow')" class="btndonate float-none"  value="<?php echo $lang['item78b']; ?>"/>
+                                <?php } else{ ?>
+                                  <input type="button" id="follow" onclick="follow('unfollow')" class="btndonate float-none"  value="<?php echo $lang['item78d']; ?>"/>
+                                  <?php } ?>
+                                </center>
+
+                                <?php }} ?>
+
+        </div>
+
+        <div class="list-group donors-title "  >
+        <h4 class=" card-title group-title "> <?php echo $lang['item77']; ?></h4>
+
+        <?php
+                              $donars=$this->view_data['donars'];
+                              foreach($donars as $donar){
+                              //  print_r($donar);
+                            ?>
+                            <div class="m-center">
+                            <a class="pull-left text-center" href="#">
+                      <span class="donars-amount text-orange" > <?php echo $donar['amount'].'$' ?></span></span>
+                      </a>
+                      <a href="/profile/showProfile/<?php echo $donar['user_id']?>">
+                      <span  class='donars-name text-center'>
+                      <?php echo Helper::userName($donar['user_id']) ?></span><br>
+                        </a>
+                            </div>
+
+
+              <?php
+              }
+      ?>
+                          <center>
+                        <button  data-toggle="modal" data-target="#donarsModal" id="donate" class="btndonate view-all float-none"  ><?php echo $lang['item77c']; ?></abutton>
+                        </center>
+        </div>
+
+        <div class="list-group follow-title"  >
+        <h4 class=" card-title group-title "> <?php echo $lang['item78']; ?></h4>
+        <?php
+                              $followers=$this->view_data['followers'];
+                              foreach($followers as $follower){
+                            ?>
+                            <div class="m-center">
+                            <a href="/profile/showProfile/<?php echo $follower?>">
+                            <img class="media-object rounded-circle follow-img"  src="<?php echo !empty(Helper::getImage(Session::get('userID')))?"/uploads/".Helper::getImage(Session::get('userID')):"/images/home/user.jpg" ?>"  alt="profile">
+                            <span  class='follow-name'>
+                            <?php echo Helper::userName($follower) ?></span><br>
+                          </a>
+                      </div>
+
+              <?php
+              }
+              ?>
+                    <center>
+                        <button  data-toggle="modal" data-target="#followerModal" id="donate" class="btndonate view-all float-none"  ><?php echo $lang['item78c']; ?></abutton>
+                    </center>
+        </div>
+      </div>
+      </div>
+      </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="donarsModal" tabindex="-1" role="dialog" aria-labelledby="donarsModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center" id="donarsModalTitle"> ALL Donars </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+
+      <?php
+            if (array_key_exists('donars',$this->view_data)){
+            foreach ($this->view_data['donars'] as $donar) {
+              ?>
+               <a href="/profile/showProfile/<?php echo $compaign['owner_id']?>">
+              <div class="donar-user">
+              <div class="d-inline">
+                <img src="<?php echo !empty(Helper::getImage(Session::get('userID')))?"/uploads/".Helper::getImage(Session::get('userID')):"/images/home/user.jpg" ?>" alt="Profile img" height="30" width="30" class="pic-profile-header" title="">
+              </div> <div class="d-inline-block"> <h5>
+               <?php echo Helper::userName($donar['user_id']); ?>
+                <span class="amount text-orange">
+                <?php echo $donar['amount']; ?>
+             $ </span></h5></div>
+              <hr class="hr-blue-80">
+          </div>
+               </a>
+            <?php }
+            }
+            ?>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- /////////////////// -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="followerModal" tabindex="-1" role="dialog" aria-labelledby="followerModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="followerModalTitle"> ALL Followes </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      <?php
+            if (array_key_exists('followers',$this->view_data)){
+            foreach ($this->view_data['followers'] as $follower) {
+              ?>
+               <a href="/profile/showProfile/<?php echo $compaign['owner_id']?>">
+                <div class="donar-user">
+                <div class="d-inline">
+                  <img  src="<?php echo !empty(Helper::getImage(Session::get('userID')))?"/uploads/".Helper::getImage(Session::get('userID')):"/images/home/user.jpg" ?>" alt="Profile img" height="30" width="30" class="pic-profile-header follow-img" title="">
+                </div> <div class="d-inline-block ml-6"> <h5 class="m-l-46"><?php echo Helper::userName($follower); ?></h5></div>
+                <hr class="hr-blue-80">
+            </div>
+               </a>
+            <?php }
+            }
+            ?>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script type="text/javascript">
+function getAmount() {
+  var amount = $(".amount");
+
+  var collect=0;
+
+  for(var i = 0; i < amount.length; i++){
+
+      collect+=parseInt($(amount[i]).text());
+  }
+  $(".donars").text(i);
+  return collect;
+}
+function percentage() {
+  var cost=parseInt($(".cost").text());
+var prec=(getAmount()/cost)*100;
+return prec;
+
+}
+
+$( document ).ready(function() {
+    $(".collection").text(getAmount());
+    $(".progress-bar").css("width",percentage()+"%");
+    load_comment();
+
+});
+
+
+      function load_comment(){
+        jQuery_1_3_2.ajax({
+            url:"/detailsCompagin",
+            method:"POST",
+            data:{type:"getcomment",
+            id:<?php echo $compaign['id'] ?>
+            },
+            success:function(data)
+            {
+              html='';
+              var comments=JSON.parse(data);
+              // alert(d)
+
+              $.each( comments.data, function( index, row ) {
+          html+='<div>'+
+                '<a class="pull-left" href="#">'+
+                  '<img class="media-object rounded-circle comm-img"  src="<?php echo !empty(Helper::getImage(Session::get('userID')))?"/uploads/".Helper::getImage(Session::get('userID')):"/images/home/user.jpg" ?>"  alt="profile">'+
+                  '</a>'+
+                  '<span class="comm-name">'+
+                  row.name+'</span><br>'+
+                  '<p class="comm-date">'+' '+row.created_at+'</p>'+
+                  '<span class="comm-txt">'+row.message+
+                  '</span></div> <hr>';
+            });
+            $('#comments-show').html(html);
+
+          }
+      });
+      }
+
+        function add_comment(){
+          comm =$('#Comment').val();
+
+        jQuery_1_3_2.ajax({
+            url:"/detailsCompagin",
+            method:"POST",
+            data:{type:"addcomment",
+            id:<?php echo $compaign['id'];?>,
+            comment: comm
+            },
+            success:function(data)
+            {
+              var comments=JSON.parse(data);
+              if(comments.statusCode=='200'){
+                $('#Comment').val('');
+                load_comment()
+
+              }
+
+          }
+      });
+
+      }
+
+      function follow(method){
+        jQuery_1_3_2.ajax({
+            url:"/follow",
+            method:"POST",
+            data:{method:method,
+            cid:<?php echo $compaign['id'] ?>,
+            owner:<?php echo $compaign['owner_id'] ?>
+            },
+            success:function(data)
+            {
+              var result=JSON.parse(data);
+                if(result.statusCode==200)
+                   location.reload();
+            }
+          });
+        }
+
+</script>
+
+<?php  include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'footer_section.phtml' ?>
+<?php  include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'footer.phtml' ?>

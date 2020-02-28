@@ -1,0 +1,181 @@
+<?php
+
+
+include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'header.phtml';
+$item=$this->view_data['item'];?>
+
+
+
+<!-- start pages photo -->
+<section class="cover-background top-space" style="background-image:url('/images/home/1(1).jpg');">
+    <div class="opacity-medium bg-dark"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 display-table page-title">
+                <div class="vertical-align-middle text-center">
+                    <!-- start sub title -->
+                    <span class="text-white">Search</span>
+                    <!-- end sub title -->
+                    <!-- start page title -->
+                    <h1 class="text-white">The Result for <?php echo $item; ?></h1>
+                    <!-- end page title -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end pages photo - -->
+
+
+
+<!-- TAPS  -->
+<div class="col-md-8 col-xs-12 ml-auto mr-auto">
+      <div class="profile-tabs">
+        <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
+          <li class="nav-item">
+              <a class="nav-link active" href="#compaigns" role="tab" data-toggle="tab" id="compBtn">
+              Compigans
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="#tags" role="tab" data-toggle="tab" id="tagBtn">
+                Tags
+              </a>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-content tab-space">
+  <div class="tab-pane active text-center gallery" id="compaigns">
+
+  </div>
+  <div class="tab-pane text-center ml-5  mx-auto" id="tags">
+
+  </div>
+  </div>
+
+</div>
+</div>
+
+<!-- TAPS  -->
+
+
+
+
+<!-- get result with ajax -->
+<script>
+      function load_compaign(){
+        var loading="<span class='spinner-grow spinner-grow'></span>";
+        jQuery_1_3_2.ajax({
+            url:"/search/find",
+            method:"POST",
+            data:{type:"getCompaign",
+            item:"<?php echo $item; ?>"
+            },
+            beforeSend:function() {
+              $('#compaigns').html(loading);
+
+            }
+            ,
+            success:function(data)
+            {
+              html='<div class="row">';
+
+              var compaigns=JSON.parse(data);
+              // alert(d)
+              var count=1;
+
+              $.each( compaigns.data, function( index, row ) {
+
+              html+=' <div class="col-md-4 img-overlay">'+
+                        '<div class="card">'+
+                            '<img class="card-img-top" src="/uploads/'+row.galary+'" alt="Card image cap">'+
+                            '<div class="overlay">'+
+                            '<div class="text-overlay"> '+
+                              '<h5 class="card-title">compagin</h5>'+
+                              '<p class="card-text">'+row.title+'</p>'+
+                              '<a href="/viewCompaign/show/'+row.id+'" class="btn btn-home-comp">Go somewhere</a>'+
+                            '</div>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>';
+                    if (count%3==0 ) {
+                    html+='</div><div class="row">';
+                    }
+                    count++;
+
+            });
+
+
+            $('#compaigns').html(html);
+
+
+          }
+      });
+      }
+
+      // load Tags
+      function load_tags(){
+        var loading="<span class='spinner-grow spinner-grow'></span>";
+
+        jQuery_1_3_2.ajax({
+            url:"/search/find",
+            method:"POST",
+            data:{type:"getTags",
+            item:"<?php echo $item; ?>"
+          },
+          beforeSend:function() {
+            $('#tags').html(loading);
+
+          }
+          ,
+            success:function(data)
+            {
+              html='<div class="row m-2 text-center mx-auto">';
+            var count=1;
+
+              var compaigns=JSON.parse(data);
+                // alert(data);
+
+
+
+
+
+              $.each( compaigns.data, function( index, row ) {
+
+
+
+          html+='<a href="/tags/index/'+row.replace("#", "hash")+'" class="btn btn-muted text-secondary border  p-2  col-md-3 ml-5 mb-2 ">'
+              +row+
+                  '</a>';
+                  if (count%3==0 ) {
+                  html+='</div><div class="row m-2 text-center mx-auto">';
+                  }
+                  count++;
+
+            });
+
+
+            $('#tags').html(html);
+
+
+          }
+      });
+      }
+
+          $(document).ready(function(){
+                  load_compaign();
+            });
+
+          $("#tagBtn").on("click", function(){
+            load_tags();
+          });
+          $("#compBtn").on("click", function(){
+            load_compaign();
+          });
+
+
+
+</script>
+
+<?php  include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'footer_section.phtml' ?>
+<?php  include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'footer.phtml' ?>

@@ -1,0 +1,70 @@
+<?php
+
+  include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'header.phtml'; ?>
+
+
+
+    <!-- start pages photo -->
+    <section class="cover-background top-space" style="background-image:url('/images/home/wbg.jpg');">
+        <div class="opacity-medium bg-purple"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 display-table page-title">
+                    <div class="vertical-align-middle text-center">
+                        <!-- start sub title -->
+                        <h2 class="text-white"><?php echo $lang['item40']?></h2>
+                        <!-- end sub title -->
+                        <!-- start page title -->
+                        <!-- <h1 class="text-white"><?php echo $lang['item41']?></h1> -->
+                        <!-- end page title -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end pages photo - -->
+
+<section>
+
+<div class="container-login100">
+			<div class="wrap-login100 row " style="width: 1000px; margin-top:-170px;">
+				<form class="login100-form validate-form"  action="" method="post"  name="contactForm" id="contactForm">
+
+					<div class="wrap-input100 validate-input" data-validate = "Valid email is: a@b.c">
+						<input class="input100" type="text" name="name"  value='<?php if(isset($_POST['name']))echo$_POST['name'];?>' />
+						<span class="focus-input100" data-placeholder="<?php echo $lang['item43']?>"></span>
+						<span class="text-danger text-error" id="nameError"> </span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Valid email is: a@b.c">
+						<input class="input100" type="text" name="email"  value='<?php if(isset($_POST['email']))echo$_POST['email'];?>' />
+						<span class="focus-input100" data-placeholder="<?php echo $lang['item44']?>"></span>
+						<span class="text-danger text-error" id="emailError"> </span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="Enter password">
+
+						<textarea name="msg" class="input100"  id="" cols="30" rows="10"></textarea>
+						<span class="focus-input100" data-placeholder="<?php echo $lang['item45']?>"></span>
+						<span class="text-danger text-error" id="passwordError"> </span>
+					</div>
+
+					<div style="width: 200px; float:left; margin-left:7px"  >
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button class="login100-form-btn" id="logintBtn">
+								<?php  echo $lang['item46'] ?>
+							</button>
+						</div>
+					</div>
+								</form>
+			</div>
+		</div>
+
+</section>
+
+
+
+
+<?php  include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'footer_section.phtml' ?>
+<?php  include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'footer.phtml' ?>

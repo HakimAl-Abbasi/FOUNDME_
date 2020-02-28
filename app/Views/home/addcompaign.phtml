@@ -1,0 +1,317 @@
+<?php
+
+if(!Session::logged())
+  header('location:/home/index');
+include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'header.phtml'; ?>
+
+<body>
+
+  <!-- start pages photo -->
+  <section class="cover-background top-space" style="background-image:url('/images/home/wbg.jpg')">
+        <div class="opacity-medium bg-purple"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 display-table page-title">
+                    <div class="vertical-align-middle text-center">
+                        <!-- start sub title -->
+                        <h1 class="text-white text-shadow-black"><?php echo $lang['item30']?></h1>
+                        <!-- end sub title -->
+                        <!-- start page title -->
+                        <!-- <h1 class="text-white text-shadow-black"><?php echo $lang['item31']?></h1> -->
+                        <!-- end page title -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end pages photo - -->
+
+
+  <!-- add compaign page start-->
+
+  <div class="container-login100 wow fadeIn">
+			<div class="wrap-login100 com1000">
+				<form class="login100-form validate-form"  action="/compaign/uploadFiles" id="addCompignForm" name="addCompignForm" method="post" enctype="multipart/form-data">
+
+				<div class="row">
+				<div class="col-md-12">
+				<div class="wrap-input100 " >
+            <label for="Title" class='btn-label' ><?php echo $lang['item33']?></label>
+						<input class="input100" type="text" name="Title"  placeholder="ex: This is my campaign" value='<?php if(isset($_POST['Title']))echo$_POST['Title'];?>' oninput="preventSpace(document.addCompignForm.Title, 4, 50); " />
+						<span class="text-danger text-error" id="TitleError"> </span>
+					</div>
+				</div>
+
+				 <div class="col-md-6">
+
+
+					<div class="wrap-input100 " >
+            <label for="Tags" class='btn-label' ><?php echo $lang['item34']?></label>
+
+						<input class="input100" type="text" name="Tags"  placeholder="#exampale"  value='<?php if(isset($_POST['Tags']))echo$_POST['Tags'];?>'  oninput="preventSpace(document.addCompignForm.Tags, 1, 20)" >
+						<span class="text-danger text-error" id="TagsError"> </span>
+					</div>
+
+					<div class="wrap-input100 " >
+            <label for="Amount" class='btn-label' ><?php echo $lang['item35']?></label>
+						<input class="input100" type="number" name="Amount" placeholder="100 $"  value='<?php if(isset($_POST['Amount']))echo$_POST['Amount'];?>'   />
+						<span class="text-danger text-error" id="AmountError"> </span>
+					</div>
+
+					<div class="wrap-input100 mb20" >
+           <label for="Deuration" class='btn-label' ><?php echo $lang['item36']?></label>
+						<input class="input100" type="date" name="Deuration"  value='<?php if(isset($_POST['Deuration']))echo$_POST['Deuration'];?>' oninput="validateDate(document.addCompignForm.Deuration)"/>
+						<?php echo Message::check('Deuration');  ?>
+						<span class="text-danger text-error" id="DeurationError"> </span>
+					</div>
+					<div  >
+					<label for="files" class='btn-label' >
+					<?php echo $lang['item38']?></label>
+					<div class="container pdf-cont">
+						<div class='pdf-div'    >
+						  <span id="myfile">choose PDF</span>
+							<input type="file" name="file" id='file'  class='uploader' onchange="$('#myfile').text(this.files[0].name);" />
+						</div>
+						<span class="text-danger text-error" id="fileError"> </span>
+
+						<div class="overlay">
+							<i class="fas fa-pencil-alt text"></i>
+						</div>
+					</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+
+					<div class="container cont-pdf" >
+            <label for="files" class='btn-label' ><?php echo $lang['item37']?></label>
+						<img src="/images/io.jpg" alt="choose image"   id='image' class="profileImg mt-30 pic-upload">
+						<input type="file"  class='uploader input-image'   require  style="top:190px"  onchange="Filevalidation('gallary-photo-add');readURL(this)" name="gallary"  id="gallary-photo-add" />
+						</img>
+						<div class="overlay">
+							<i class="fas fa-pencil-alt text"></i>
+						</div>
+					</div>
+					<span class="text-danger text-error" id="gallaryError"> </span>
+
+
+
+
+					<!-- <div class="wrap-input100 " >
+						<input class="input100" type="file" name="gallary" value='<?php if(isset($_POST['gallary']))echo$_POST['gallary'];?>'   oninput="stringlength(document.addCompignForm.gallary,8,15);">
+						<span class="focus-input100" data-placeholder="<?php echo $lang['item37']?>"></span>
+						<?php echo Message::check('gallary');  ?>
+						<span class="text-danger text-error" id="gallaryError"> </span>
+					</div> -->
+
+
+				</div>
+				<div class="col-md-12 mt-3">
+
+				<div class="wrap-input100 " >
+				<label for="descrption" class='btn-label' ><?php echo $lang['item37']?></label>
+						<textarea class="input100" rows="4" cols="50" class="form-control" id="mytextarea" value="" name="descrption">
+						</textarea>
+						<?php echo Message::check('file');  ?>
+						<span class="text-danger text-error" id="descrptionError"> </span>
+					</div>
+
+				</div>
+				<input type="submit"  style="display: none;" id='ajaxSubmit'  value="Add"  name="addComp" onclick="upload_to_db();" />
+
+					<div class="" style="width: 200px; float:left; margin-left:25px">
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button type="button" class="login100-form-btn" id="addComp"name="addComp" onclick="serverSideValidation();" ><?php echo $lang['item30']?></button>
+
+						</div>
+					</div>
+
+
+				</form>
+			</div>
+		</div>
+
+</div>
+
+
+<!-- Large modal -->
+<button type="button" class="btn btn-primary"  id="loading" style="display: none;"   data-toggle="modal" data-target=".bd-example-modal-lg" data-keyboard="false" data-backdrop="static">loadding</button>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" style="top:20%;" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+  <div class="modal-content progress-content" >
+      <!-- <div class="modal-header progess-header" > -->
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="myprogress" id="progress_div">
+          <svg class="progress-circle" width="200px" height="200px" xmlns="http://www.w3.org/2000/svg">
+            <circle class="progress-circle-back"
+                  cx="80" cy="80" r="74"></circle>
+              <circle class="progress-circle-prog"
+                      cx="80" cy="80" r="74"></circle>
+          </svg>
+          <div class="progress-text" data-progress="0">0%</div>
+      </div>
+      <center>
+    <span class='progress-loading' >Loading...</span>
+    </center>
+    </div>
+    <div class="modal-footer progress-footer" >
+
+    </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+  <script type="text/javascript" src="/js/home/jquery.form.js"></script>
+  <script type="text/javascript">
+var jQuery_form = $.noConflict(true);
+</script>
+
+  <script type="text/javascript" >
+     function upload_to_db()
+	{
+
+    tinyMCE.triggerSave();
+
+      jQuery_form('#addCompignForm').ajaxForm({
+			beforeSubmit: function() {
+
+        document.getElementById("loading").click();
+    
+        progressBar(0,100);
+			},
+			uploadProgress: function(event, position, total, percentComplete) {
+        progressBar(percentComplete,100);
+
+			},
+			success: function() {
+        progressBar(100,100);
+
+			},
+			complete: function(xhr) {
+				if(xhr.responseText)
+				{
+          progressBar(100,100);
+          // alert(xhr.responseText);
+          window.location.replace("/viewCompaign/show/"+xhr.responseText);
+				}
+			}
+    });
+  // }
+  // else
+  // event.preventDefault();
+
+  }
+
+  Filevalidation = (id) => {
+
+        const fi = document.getElementById(id);
+        // Check if any file is selected.
+        if (fi.files.length > 0) {
+            for (var i = 0; i <= fi.files.length - 1; i++) {
+
+                const fsize = fi.files.item(i).size;
+                const ftype =  fi.files.item(i).type;
+                const type=ftype.split('/');
+                const fname = fi.files.item(i).name;
+                const error = fi.name+'Error';
+                const file = Math.round((fsize / 1024));
+                // alert(type);
+                // The size of the file.
+                if (file > 50000) {
+                    document.getElementById(error).innerHTML=
+                    <?php echo "'".$lang['error10']."'" ?>;
+                }
+                else if ((fi.name=='gallary' &&  type[0] !='image') || (fi.name=='file' &&  ftype !='application/pdf')) {
+				  document.getElementById(error).innerHTML=
+                  <?php echo "'".$lang['error11']."'" ?>;
+                } else {
+                  document.getElementById(error).innerHTML='';
+                }
+            }
+        }
+    }
+
+function progressBar(progressVal,totalPercentageVal = 100) {
+		var strokeVal = (4.64 * 100) /  totalPercentageVal;
+		var x = document.querySelector('.progress-circle-prog');
+		x.style.strokeDasharray = progressVal * (strokeVal) + ' 999';
+		var el = document.querySelector('.progress-text');
+		var from = $('.progress-text').data('progress');
+		$('.progress-text').data('progress', progressVal);
+		var start = new Date().getTime();
+
+		setTimeout(function() {
+			var now = (new Date().getTime()) - start;
+			var progress = now / 700;
+			el.innerHTML =Math.round(progressVal / totalPercentageVal * 100) + '%';
+			if (progress < 1) setTimeout(arguments.callee, 10);
+		}, 10);
+
+	}
+  function serverSideValidation(){
+     if(Requirevalidation(document.addCompignForm.Title)&&Requirevalidation(document.addCompignForm.Tags)&&
+      Requirevalidation(document.addCompignForm.Amount)&&Requirevalidation(document.addCompignForm.Deuration)&&
+      Requirevalidation(document.addCompignForm.descrption)){
+    jQuery_1_3_2.ajax({
+        url:"/validate",
+        method:"POST",
+             data:{
+           type:"addCompain",
+           formData:jQuery_1_3_2('#addCompignForm').serialize()}
+        ,
+        success:function(data)
+        {
+      var result=JSON.parse(data);
+
+      if(result.statusCode==200){
+
+        document.getElementById("ajaxSubmit").click();
+
+      }
+      else{
+          var error=JSON.parse(result.message);
+          i=1;
+          jQuery_1_3_2.each( error, function( key, value ) {
+
+
+              if(key=='msgState' || key=='main'|| key=='userID'|| key=='userName'|| key=='type');
+              else
+              document.getElementById(key+'Error').innerHTML=value;
+
+
+            });
+            return false;}
+        }
+
+             });
+            }
+        }
+		function readURL(input) {
+
+			if($('#gallaryError')!=''){
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#image')
+                    .attr('src', e.target.result)
+                    .width(418)
+                    .height(263)
+                    .css("margin-top", "44px");
+
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+			}
+    }
+
+</script>
+
+    <?php include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'footer_section.phtml'; ?>
+    <?php include  VIEW.'layouts'.DIRECTORY_SEPARATOR.'footer.phtml'; ?>

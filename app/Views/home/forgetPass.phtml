@@ -1,0 +1,223 @@
+<?php
+
+if(Session::logged())
+  header('location:/home/index');
+include VIEW.'layouts'.DIRECTORY_SEPARATOR.'head.phtml' ?>
+
+<!-- start login -->
+<body class="bg-blue">
+<section id="email">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<form class="login100-form validate-form"  action="" method="post"  >
+					<span class="login100-form-title p-b-26">
+					<?php echo $lang['item50']?>
+					</span>
+					<span class="login100-form-title p-b-48">
+					<a href="/home/index">
+									<img src="/images/home/logo.png" class='logoo' alt=""/>
+								</a>
+					</span>
+
+					<div class="wrap-input100 validate-input" data-validate = "Valid email is: a@b.c">
+						<input class="input100" type="text" name="email" id="emailVal"  value='<?php if(isset($_POST['email']))echo$_POST['email'];?>' />
+						<span class="focus-input100" data-placeholder="<?php echo $lang['item53']?>"></span>
+						<span class="text-danger text-error" id="emailError"> </span>
+					</div>
+
+					<div class="mainbtn" >
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button class="login100-form-btn" id="logintBtn" onclick="emailValidate()">
+							<?php echo $lang['item54']?>
+							</button>
+						</div>
+					</div>
+					<div class="extra" >
+						
+							
+					<span class="txt1">
+					<?php echo $lang['item51'].'  '?>
+						</span>
+
+						<a class="txt2" href="/auth/signup">
+						<?php echo $lang['item4b']?>
+						</a>						
+					</div>
+				
+					<!-- </div> -->
+				</form>
+			</div>
+		</div>
+</section>
+
+<section id="code">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<form class="login100-form validate-form"  action="" method="post" >
+					<span class="login100-form-title p-b-26">
+					<?php echo $lang['item50']?>
+					</span>
+					<span class="login100-form-title p-b-48">
+					<a href="/home/index">
+									<img src="/images/home/logo.png" class='logoo' alt=""/>
+								</a>
+					</span>
+
+					<div class="wrap-input100 validate-input" data-validate = "Valid email is: a@b.c">
+						<input class="input100" type="text" id="codeval" name="code"  value='<?php if(isset($_POST['email']))echo$_POST['email'];?>' />
+						<span class="focus-input100" data-placeholder="<?php echo $lang['item58']?>"></span>
+						<span class="text-danger text-error" id="codError"> </span>
+					</div>
+
+				</form>
+					<div class="mainbtn" >
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button class="login100-form-btn" id="logintBtn" onclick="codeValidate()">
+							<?php echo $lang['item54']?>
+							</button>
+						</div>
+					</div>
+			</div>
+		</div>
+</section>
+
+<section id="reset">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<form class="login100-form validate-form"  action="" method="post"  name="forgtForm" id="forgtForm">
+					<span class="login100-form-title p-b-26">
+					<?php echo $lang['item50']?>
+					</span>
+					<span class="login100-form-title p-b-48">
+					<a href="/home/index">
+									<img src="/images/home/logo.png" class='logoo' alt=""/>
+								</a>
+					</span>
+
+					<div class="wrap-input100 validate-input" >
+						<span class="btn-show-pass">
+							<i class="fas fa-eye"></i>
+						</span>
+						<input class="input100" type="password" name="password"  id='password' value='<?php if(isset($_POST['password']))echo$_POST['password'];?>'   oninput="stringlength(document.forgtForm.password,8,15);">
+						<span class="focus-input100" data-placeholder="<?php echo $lang['item25']?>"></span>
+						<?php echo Message::check('password');  ?>
+						<span class="text-danger text-error" id="passwordError"> </span>
+					</div>
+
+					<div class="wrap-input100 validate-input" >
+						<span class="btn-show-pass">
+							<i class="fas fa-eye"></i>
+						</span>
+						<input class="input100" type="password"  name="confirm_password" value='<?php if(isset($_POST['confirm_password']))echo$_POST['confirm_password'];?>'  oninput=" confirmPassValidation(document.forgtForm.confirm_password,document.forgtForm.password)">
+						<span class="focus-input100" data-placeholder="<?php echo $lang['item26']?>"></span>
+						<?php echo Message::check('confirm_password');  ?>
+						<span class="text-danger text-error" id="confirm_passwordError"> </span>
+					</div>
+
+				</form>
+					<div class="mainbtn" >
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button class="login100-form-btn" id="logintBtn" onclick="resetPass()">
+							<?php echo $lang['item54']?>
+							</button>
+						</div>
+					</div>
+			</div>
+		</div>
+</section>
+</body>
+	<script>
+$(document).ready(function(){
+	jQuery_1_3_2('#code').hide();
+	jQuery_1_3_2('#reset').hide();
+});
+var code;
+var uid;
+function emailValidate(){
+	jQuery_1_3_2.ajax({
+				url:"/forgetPass",
+				method:"POST",
+				 data:{
+					 type:"email",
+					 email:jQuery_1_3_2('#emailVal').val(),
+					}
+					 ,
+				success:function(data)
+				{
+			var result=JSON.parse(data);
+		
+			if(result.statusCode==200){
+			code=result.code;
+			uid=result.uid;
+	
+				jQuery_1_3_2('#email').hide();
+				jQuery_1_3_2('#code').fadeIn(1500);
+			}
+			else{
+				errMsg(<?php echo '"'.$lang['item66'].'"' ?>);
+			}
+			
+		  }
+			
+				   });
+}
+var h=0;
+function codeValidate(){
+
+	entered=jQuery_1_3_2('#codeval').val();
+	if(h<3){
+	
+	if(code==entered){
+		jQuery_1_3_2('#code').hide();
+				jQuery_1_3_2('#reset').fadeIn(1500);
+	}
+	else{
+		errMsg(<?php echo '"'.$lang['item67'].'"' ?>);
+		h++;
+	}
+}
+	else{
+		alert(h);
+		errMsg(<?php echo '"'.$lang['item65'].'"' ?>);
+		setTimeout(function(){
+            window.location.href = '/home/index';
+         }, 8000);
+
+	}
+
+				}
+function resetPass(){
+	if(Requirevalidation(document.forgtForm.password)&&
+		Requirevalidation(document.forgtForm.confirm_password)){
+	jQuery_1_3_2.ajax({
+				url:"/forgetPass",
+				method:"POST",
+				 data:{
+					 type:"reset",
+					 uid:uid,
+					 pass:$('#password').val()
+					}
+					 ,
+				success:function(data)
+				{
+			var result=JSON.parse(data);
+		
+			if(result.statusCode==200){
+				errMsg(<?php echo '"'.$lang['item68'].'"' ?>)
+				setTimeout(function(){
+            window.location.href = '/auth/login';
+         }, 4000);
+			}
+			
+		  }
+			
+				   });
+		}
+				}
+</script>
+
+    <!-- end login -->
+	<?php   include VIEW.'layouts'.DIRECTORY_SEPARATOR.'footer.phtml' ?>

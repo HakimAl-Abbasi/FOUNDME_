@@ -1,2 +1,3 @@
-# FOUNDME
- is my project  php mvc 
+# FoundMe
+foundMe web app 
+is website for get money
